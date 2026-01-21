@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MKB AAG 🔥</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --shake: 0px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1b1b1b, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+.app {
+    transform: translate(var(--shake), var(--shake));
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button {
+    position: relative;
+    padding: 18px 42px;
+    font-size: 22px;
+    font-weight: 800;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #ff9800, #ff2a00);
+    color: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(255, 42, 0, 0.7);
+    touch-action: manipulation;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Fire particles (mobile-friendly) */
+.particle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: radial-gradient(circle, #fff, #ff0, #f00);
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: fire 600ms ease-out forwards;
+}
+
+@keyframes fire {
+    0% {
+        transform: translate(0,0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(
+            calc(-80px + 160px * var(--x)),
+            calc(-120px * var(--y))
+        ) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Screen shake */
+@keyframes shake {
+    0% { --shake: 0px; }
+    25% { --shake: -4px; }
+    50% { --shake: 4px; }
+    75% { --shake: -3px; }
+    100% { --shake: 0px; }
+}
+
+.shake {
+    animation: shake 200ms linear;
+}
+</style>
+</head>
+
+<body>
+<div class="app" id="app">
+    <h1>🔥 MEME BOX 🔥</h1>
+    <button onclick="playMeme(this)">MKB AAG</button>
+</div>
+
+<audio id="audio" src="meme.mp3" preload="auto"></audio>
+
+<script>
+const audio = document.getElementById("audio");
+const app = document.getElementById("app");
+
+function playMeme(btn) {
+    // restart sound
+    audio.currentTime = 0;
+    audio.play();
+
+    // vibration (mobile only)
+    if (navigator.vibrate) {
+        navigator.vibrate([60, 30, 60]);
+    }
+
+    // screen shake
+    app.classList.remove("shake");
+    void app.offsetWidth; // reflow
+    app.classList.add("shake");
+
+    // fire animation
+    fireEffect(btn);
+}
+
+function fireEffect(button) {
+    const count = window.innerWidth < 768 ? 12 : 18; // mobile optimize
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement("span");
+        p.className = "particle";
+        p.style.setProperty("--x", Math.random());
+        p.style.setProperty("--y", Math.random());
+        button.appendChild(p);
+        setTimeout(() => p.remove(), 600);
+    }
+}
+</script>
+</body>
+</html>
