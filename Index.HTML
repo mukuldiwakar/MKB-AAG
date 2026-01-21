@@ -7,7 +7,8 @@
 
 <style>
 :root {
-    --shake: 0px;
+    --shake-x: 0px;
+    --shake-y: 0px;
 }
 
 * {
@@ -27,26 +28,27 @@ body {
 }
 
 .app {
-    transform: translate(var(--shake), var(--shake));
+    transform: translate(var(--shake-x), var(--shake-y));
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
 }
 
 button {
     position: relative;
-    padding: 18px 42px;
+    padding: 18px 44px;
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 900;
     border: none;
-    border-radius: 18px;
+    border-radius: 20px;
     background: linear-gradient(145deg, #ff9800, #ff2a00);
     color: #fff;
     cursor: pointer;
     overflow: hidden;
-    box-shadow: 0 12px 30px rgba(255, 42, 0, 0.7);
+    box-shadow: 0 14px 34px rgba(255, 42, 0, 0.75);
     touch-action: manipulation;
 }
 
@@ -54,7 +56,7 @@ button:active {
     transform: scale(0.95);
 }
 
-/* Fire particles (mobile-friendly) */
+/* Fire particles */
 .particle {
     position: absolute;
     left: 50%;
@@ -75,24 +77,25 @@ button:active {
     }
     100% {
         transform: translate(
-            calc(-80px + 160px * var(--x)),
-            calc(-120px * var(--y))
+            calc(-90px + 180px * var(--x)),
+            calc(-130px * var(--y))
         ) scale(0);
         opacity: 0;
     }
 }
 
-/* Screen shake */
+/* Screen shake animation */
 @keyframes shake {
-    0% { --shake: 0px; }
-    25% { --shake: -4px; }
-    50% { --shake: 4px; }
-    75% { --shake: -3px; }
-    100% { --shake: 0px; }
+    0%   { --shake-x: 0px;  --shake-y: 0px; }
+    20%  { --shake-x: -5px; --shake-y: 3px; }
+    40%  { --shake-x: 5px;  --shake-y: -3px; }
+    60%  { --shake-x: -4px; --shake-y: 2px; }
+    80%  { --shake-x: 4px;  --shake-y: -2px; }
+    100% { --shake-x: 0px;  --shake-y: 0px; }
 }
 
 .shake {
-    animation: shake 200ms linear;
+    animation: shake 220ms linear;
 }
 </style>
 </head>
@@ -103,34 +106,39 @@ button:active {
     <button onclick="playMeme(this)">MKB AAG</button>
 </div>
 
-<audio id="audio" src="meme.mp3" preload="auto"></audio>
+<!-- Audio file -->
+<audio
+    id="audio"
+    preload="auto"
+    src="Aag%20MKB%20Aag%20%C3%97%20Bahubali%20%C3%97%20Amitabh%20Bachchan%20Trending%20meme%20-%20Still%20confused.mp3">
+</audio>
 
 <script>
 const audio = document.getElementById("audio");
 const app = document.getElementById("app");
 
-function playMeme(btn) {
-    // restart sound
+function playMeme(button) {
+    // Restart sound instantly
     audio.currentTime = 0;
     audio.play();
 
-    // vibration (mobile only)
+    // Mobile vibration
     if (navigator.vibrate) {
         navigator.vibrate([60, 30, 60]);
     }
 
-    // screen shake
+    // Screen shake
     app.classList.remove("shake");
-    void app.offsetWidth; // reflow
+    void app.offsetWidth; // force reflow
     app.classList.add("shake");
 
-    // fire animation
-    fireEffect(btn);
+    // Fire animation
+    fireEffect(button);
 }
 
 function fireEffect(button) {
-    const count = window.innerWidth < 768 ? 12 : 18; // mobile optimize
-    for (let i = 0; i < count; i++) {
+    const particles = window.innerWidth < 768 ? 12 : 18;
+    for (let i = 0; i < particles; i++) {
         const p = document.createElement("span");
         p.className = "particle";
         p.style.setProperty("--x", Math.random());
