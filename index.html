@@ -25,7 +25,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* FIRE BACKGROUND */
+/* BASE FIRE GLOW */
 .fire-bg {
   position: fixed;
   inset: 0;
@@ -33,13 +33,44 @@ body {
     radial-gradient(circle at 50% 120%, #ff6a00 0%, transparent 40%),
     radial-gradient(circle at 20% 100%, #ff0000 0%, transparent 45%),
     radial-gradient(circle at 80% 100%, #ffb300 0%, transparent 45%);
-  animation: fireMove 3s infinite alternate ease-in-out;
+  animation: fireGlow 3s infinite alternate ease-in-out;
   z-index: 0;
 }
 
-@keyframes fireMove {
-  0% { filter: blur(0px) brightness(1); }
-  100% { filter: blur(3px) brightness(1.2); }
+@keyframes fireGlow {
+  0% { filter: blur(1px) brightness(1); }
+  100% { filter: blur(3px) brightness(1.25); }
+}
+
+/* 🔥 CONTINUOUS FIRE SPARKS */
+.sparks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.spark {
+  position: absolute;
+  bottom: -20px;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ffd000, #ff6a00, transparent);
+  border-radius: 50%;
+  animation: rise linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-120vh) scale(0.2);
+    opacity: 0;
+  }
 }
 
 /* CENTER CONTAINER */
@@ -51,15 +82,15 @@ body {
 
 /* BUTTON */
 button {
-  padding: 20px 40px;
-  font-size: 1.5rem;
+  padding: 20px 44px;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #fff;
   background: linear-gradient(135deg, #ff0000, #ff6a00);
   border: none;
   border-radius: 60px;
   cursor: pointer;
-  box-shadow: 0 0 25px rgba(255, 80, 0, 0.8);
+  box-shadow: 0 0 30px rgba(255, 80, 0, 0.9);
   transition: transform 0.1s;
 }
 
@@ -67,12 +98,12 @@ button:active {
   transform: scale(0.92);
 }
 
-/* BUTTON FIRE BLAST */
+/* BUTTON FIRE BURST */
 button::after {
   content: "";
   position: absolute;
-  inset: -20px;
-  background: radial-gradient(circle, rgba(255,200,0,0.8), transparent 60%);
+  inset: -24px;
+  background: radial-gradient(circle, rgba(255,200,0,0.9), transparent 65%);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -132,6 +163,8 @@ button.fire::after {
 
 <div class="fire-bg"></div>
 
+<div class="sparks" id="sparks"></div>
+
 <div class="container">
   <button id="btn">MKB AAG</button>
 </div>
@@ -139,28 +172,36 @@ button.fire::after {
 <audio id="audio" src="meme.mp3" preload="auto"></audio>
 
 <script>
+/* 🔥 CREATE CONTINUOUS SPARKS */
+const sparks = document.getElementById("sparks");
+
+for (let i = 0; i < 25; i++) {
+  const s = document.createElement("div");
+  s.className = "spark";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.animationDuration = 2 + Math.random() * 3 + "s";
+  s.style.animationDelay = Math.random() * 5 + "s";
+  sparks.appendChild(s);
+}
+
+/* BUTTON LOGIC */
 const btn = document.getElementById("btn");
 const audio = document.getElementById("audio");
 
 btn.addEventListener("click", () => {
-  // play sound
   audio.currentTime = 0;
   audio.play().catch(() => {});
 
-  // button fire
   btn.classList.add("fire");
   setTimeout(() => btn.classList.remove("fire"), 300);
 
-  // screen shake
   document.body.classList.add("shake");
   setTimeout(() => document.body.classList.remove("shake"), 350);
 
-  // vibration (mobile)
   if (navigator.vibrate) {
-    navigator.vibrate([100, 50, 100]);
+    navigator.vibrate([120, 60, 120]);
   }
 
-  // show image
   showImage();
 });
 
